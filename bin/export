@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# This file is sourced by subsequent buildpacks to get environment variables
+
+# The directory where we installed GSL
+GSL_DIR="$HOME/vendor/gsl"
+
+# Export paths for GSL installation
+export PATH="${GSL_DIR}/bin:$PATH"
+export LD_LIBRARY_PATH="${GSL_DIR}/lib:$LD_LIBRARY_PATH"
+export LIBRARY_PATH="${GSL_DIR}/lib:$LIBRARY_PATH"
+export CPATH="${GSL_DIR}/include:$CPATH"
+export PKG_CONFIG_PATH="${GSL_DIR}/lib/pkgconfig:$PKG_CONFIG_PATH"
+
+# GSL-specific variables that help gems find the library
+export GSL_ROOT="${GSL_DIR}"
+export GSL_LIB_DIR="${GSL_DIR}/lib"
+export GSL_INCLUDE_DIR="${GSL_DIR}/include"
+
+# Bundler build configuration for the gsl gem
+export BUNDLE_BUILD__GSL="--with-gsl-dir=${GSL_DIR} --with-cflags=-Wno-error=incompatible-function-pointer-types"
+
+# Debug output
+echo "-----> GSL buildpack export: Setting environment for subsequent buildpacks"
+echo "       GSL_DIR=${GSL_DIR}"
+echo "       PATH now includes: ${GSL_DIR}/bin"
+echo "       BUNDLE_BUILD__GSL=${BUNDLE_BUILD__GSL}"
