@@ -27,7 +27,10 @@ echo "-----> Fetching and vendoring gsl"
 curl "https://vp-public-dev.s3.us-west-2.amazonaws.com/libraries/gsl-1.14.tar.gz" -s -o - | tar xzf - --strip 1 -C "$GSL_BUILD_DIR"
 
 # FYI we do this and set the export path explicitly because we cannot assume all buildpacks copy this dir over
-cp -R "$GSL_BUILD_DIR" "${APP_VENDOR_DIR}/gsl"
+# Only copy if source and destination are different (they're the same when HOME=/app in Heroku CI)
+if [ "$GSL_BUILD_DIR" != "${APP_VENDOR_DIR}/gsl" ]; then
+  cp -R "$GSL_BUILD_DIR" "${APP_VENDOR_DIR}/gsl"
+fi
 
 set-default-env PATH "gsl/bin"
 set-default-env LD_LIBRARY_PATH "gsl/lib"
